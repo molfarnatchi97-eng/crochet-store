@@ -1,0 +1,44 @@
+{% comment %}
+  Header section with transparent glassmorphism navigation bar.
+{% endcomment %}
+
+<header class="site-header js-site-header">
+  <div class="container header-container">
+    <!-- Logo -->
+    <a href="/" class="logo-text">
+      <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+      {{ shop.name | default: "Knit & Loop" }}
+    </a>
+
+    <!-- Navigation Menu -->
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="/collections/all" class="nav-link">Patterns</a></li>
+        <li><a href="/pages/build-a-bundle" class="nav-link" style="color: var(--primary-accent); font-weight: 600;">Build a Bundle</a></li>
+        <li><a href="/pages/winter-bundle" class="nav-link">Winter Sale</a></li>
+      </ul>
+    </nav>
+
+    <!-- Cart Actions -->
+    <div class="header-actions">
+      <a href="/cart" class="cart-icon-wrapper" aria-label="Cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-count js-header-cart-count">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": []
+}
+{% endschema %}

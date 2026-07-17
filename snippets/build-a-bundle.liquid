@@ -1,0 +1,142 @@
+{% comment %}
+  Build-a-Bundle Component
+  Allows users to select exactly 6 digital products from a grid to add as a bundle.
+{% endcomment %}
+
+{% assign collection = collections['crochet-patterns'] | default: collections.all %}
+
+<!-- Sticky Top Progress Bar -->
+<div class="bundle-progress-bar js-bundle-progress-bar">
+  <div class="container">
+    <div class="progress-flex">
+      <div class="progress-text js-progress-text">0 of 6 Selected</div>
+      <div class="progress-track-wrapper">
+        <div class="progress-track">
+          <div class="progress-fill js-progress-fill"></div>
+        </div>
+        <div class="progress-indicators">
+          {% for i in (1..6) %}
+            <div class="progress-dot js-progress-dot" data-step="{{ i }}"></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Selection Grid -->
+<div class="bundle-grid js-bundle-grid">
+  {% if collection.products.size > 0 %}
+    {% for product in collection.products %}
+      {% assign variant = product.selected_or_first_available_variant %}
+      
+      <!-- Pattern Selection Card -->
+      <div class="pattern-card glass-panel js-pattern-card" 
+           data-product-id="{{ product.id }}" 
+           data-variant-id="{{ variant.id }}" 
+           data-title="{{ product.title | escape }}">
+        
+        <!-- Checkbox Overlay -->
+        <div class="selection-overlay">
+          <div class="select-checkbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Product Image -->
+        <div class="card-image-wrapper">
+          {% if product.featured_image %}
+            <img src="{{ product.featured_image | img_url: '400x400', crop: 'center' }}" 
+                 alt="{{ product.title | escape }}" 
+                 class="card-image"
+                 loading="lazy">
+          {% else %}
+            <!-- Placeholder -->
+            <div class="card-image" style="background: #E8EAE6; display: flex; align-items: center; justify-content: center; height: 100%;">
+              <span style="color: var(--text-muted); font-weight: 500;">Pattern Preview</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Info Details -->
+        <div class="card-info">
+          <span class="badge badge-pdf card-badge">Instant PDF Download</span>
+          <h3 class="card-title">{{ product.title }}</h3>
+          
+          <!-- Metadata footer of card -->
+          <div class="card-meta">
+            <span class="card-price">{{ product.price | money }}</span>
+            <span class="difficulty-rating">
+              {%- assign difficulty = 'Intermediate' -%}
+              {%- for tag in product.tags -%}
+                {%- if tag contains 'Easy' or tag contains 'Beginner' or tag contains 'Advanced' -%}
+                  {%- assign difficulty = tag -%}
+                {%- endif -%}-
+              {%- endfor -%}
+              {{ difficulty }}
+            </span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <!-- Mock Products if store is empty / testing -->
+    {% for i in (1..12) %}
+      <div class="pattern-card glass-panel js-pattern-card" 
+           data-product-id="100{{ i }}" 
+           data-variant-id="200{{ i }}" 
+           data-title="Crochet Pattern Design #{{ i }}">
+        
+        <div class="selection-overlay">
+          <div class="select-checkbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="card-image-wrapper">
+          <div class="card-image" style="background: linear-gradient(135deg, #FAEDCD 0%, #FAF6F0 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--primary-accent); margin-bottom: 8px;">
+              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+              <path d="M12 6v12M6 12h12"/>
+            </svg>
+            <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">Pattern #{{ i }} Image</span>
+          </div>
+        </div>
+
+        <div class="card-info">
+          <span class="badge badge-pdf card-badge">Instant PDF Download</span>
+          <h3 class="card-title">Premium Crochet Design #{{ i }}</h3>
+          
+          <div class="card-meta">
+            <span class="card-price">$6.50</span>
+            <span class="difficulty-rating">Easy/Medium</span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<!-- Sticky Bottom Checkout CTA drawer -->
+<div class="bundle-checkout-bar js-bundle-checkout-bar">
+  <div class="container">
+    <div class="checkout-bar-flex">
+      <div class="checkout-bar-info">
+        <div class="checkout-bar-title">Custom 6-Pattern Bundle</div>
+        <div class="checkout-bar-subtitle">
+          Selected: <span class="js-selected-count">0</span> / 6 items — <strong>$29.00</strong> 
+          <span style="text-decoration: line-through; opacity: 0.6; margin-left: 6px; font-weight: 400;">$39.00 Value</span>
+        </div>
+      </div>
+      <div class="checkout-bar-action">
+        <button class="btn btn-primary checkout-btn js-checkout-btn" disabled>
+          Choose 6 patterns
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+{% comment %}
+  Standard styled footer.
+{% endcomment %}
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Logo / Info Column -->
+      <div class="footer-col" style="max-width: 320px;">
+        <span class="logo-text" style="font-size: 1.4rem;">
+          <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          {{ shop.name | default: "Knit & Loop" }}
+        </span>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">
+          Premium digital crochet patterns designed for beautiful results, direct learning, and instant creative fulfillment.
+        </p>
+      </div>
+
+      <!-- Links Column -->
+      <div class="footer-col">
+        <div class="footer-col-title">Shop Patterns</div>
+        <ul class="footer-links">
+          <li><a href="/collections/all">All Designs</a></li>
+          <li><a href="/pages/build-a-bundle">Build-a-Bundle</a></li>
+          <li><a href="/collections/beginner-friendly">Beginner Friendly</a></li>
+          <li><a href="/collections/amigurumi">Amigurumi Patterns</a></li>
+        </ul>
+      </div>
+
+      <!-- Support Column -->
+      <div class="footer-col">
+        <div class="footer-col-title">Customer Service</div>
+        <ul class="footer-links">
+          <li><a href="/pages/faq">F.A.Q.</a></li>
+          <li><a href="/pages/contact">Contact Support</a></li>
+          <li><a href="/pages/downloads">Pattern Retrieval</a></li>
+          <li><a href="/pages/terms">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Copyright / Socials -->
+    <div class="footer-bottom">
+      <div class="copyright">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name | default: "Knit & Loop" }}. All patterns are for personal use.
+      </div>
+      <div class="payment-badges" style="display: flex; gap: 8px; opacity: 0.65;">
+        <!-- Simple text-based trust badges -->
+        <span style="font-size: 0.75rem; border: 1px solid var(--text-muted); padding: 2px 6px; border-radius: 4px;">Shopify Secure</span>
+        <span style="font-size: 0.75rem; border: 1px solid var(--text-muted); padding: 2px 6px; border-radius: 4px;">PayPal</span>
+        <span style="font-size: 0.75rem; border: 1px solid var(--text-muted); padding: 2px 6px; border-radius: 4px;">Stripe</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": []
+}
+{% endschema %}

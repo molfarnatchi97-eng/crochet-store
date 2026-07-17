@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "banner": {
+      "type": "bundle-landing",
+      "settings": {
+        "title": "Build Your Premium Crochet Pattern Bundle",
+        "description": "Unlock infinite creativity! Get instant access to our handpicked crochet patterns, all with clear tutorials and digital support. Save over 80% with our multi-pattern bundle offers."
+      }
+    }
+  },
+  "order": [
+    "banner"
+  ]
+}

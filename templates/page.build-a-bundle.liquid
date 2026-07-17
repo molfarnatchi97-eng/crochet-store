@@ -1,0 +1,16 @@
+<div class="bundle-container">
+  <div class="container">
+    <div class="bundle-intro">
+      <h1>{{ page.title }}</h1>
+      {% if page.content != blank %}
+        <div class="rte">
+          {{ page.content }}
+        </div>
+      {% else %}
+        <p>Curate your own perfect pattern library! Choose exactly 6 of our premium crochet patterns below, and get them all bundled together for one low, fixed price. Your PDF downloads will be delivered instantly after checkout.</p>
+      {% endif %}
+    </div>
+
+    {% render 'build-a-bundle' %}
+  </div>
+</div>

@@ -1,0 +1,141 @@
+{% comment %}
+  Optimized Product Page Section
+  Emphasizes digital PDF delivery, clean layout, and trust factors.
+{% endcomment %}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<div class="product-detail-section">
+  <div class="container">
+    <div class="product-layout">
+      
+      <!-- Gallery Column -->
+      <div class="product-gallery">
+        <div class="main-image-container glass-panel">
+          {% if product.featured_image %}
+            <img src="{{ product.featured_image | img_url: '800x800' }}" 
+                 alt="{{ product.title | escape }}" 
+                 class="js-main-product-image"
+                 loading="eager">
+          {% else %}
+            <!-- Mock/Placeholder for main product image -->
+            <div style="background: linear-gradient(135deg, #FAEDCD 0%, #E8EAE6 100%); aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color: var(--primary-accent); margin-bottom: 16px;">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                <circle cx="12" cy="12" r="4"/>
+              </svg>
+              <span style="font-weight: 700; color: var(--text-color);">No Product Image</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Gallery Thumbnails -->
+        <div class="thumbnail-row">
+          {% if product.images.size > 1 %}
+            {% for image in product.images %}
+              <div class="thumbnail js-thumbnail {% if forloop.first %}active{% endif %}" data-src="{{ image | img_url: '800x800' }}">
+                <img src="{{ image | img_url: '150x150', crop: 'center' }}" alt="{{ product.title | escape }}">
+              </div>
+            {% endfor %}
+          {% else %}
+            <!-- Mock Thumbnails for preview/testing -->
+            {% for i in (1..3) %}
+              <div class="thumbnail js-thumbnail {% if forloop.first %}active{% endif %}" data-src="">
+                <div style="background: #E8EAE6; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">
+                  View {{ i }}
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Info Details Column -->
+      <div class="product-info-panel">
+        
+        <!-- Breadcrumb / Badge -->
+        <div class="product-badge-row">
+          <span class="badge badge-pdf">Instant PDF Download</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="product-title-text">{{ product.title | default: "Premium Crochet Design Pattern" }}</h1>
+        
+        <!-- Rating & Reviews -->
+        <div class="product-rating-stars" style="display: flex; gap: 4px; color: var(--primary-accent); align-items: center;">
+          {% for i in (1..5) %}
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+          {% endfor %}
+          <span style="color: var(--text-muted); font-size: var(--font-sm); margin-left: 8px; font-weight: 500;">(48 verified reviews)</span>
+        </div>
+
+        <!-- Price -->
+        <div class="product-price-row">
+          <span class="product-price js-product-price">{{ current_variant.price | default: "$6.50" | money }}</span>
+        </div>
+
+        <!-- Digital Delivery Key callout -->
+        <div class="delivery-callout">
+          <div class="delivery-callout-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+          </div>
+          <div class="delivery-callout-content">
+            <span class="delivery-title">Instant Digital Delivery</span>
+            <span class="delivery-desc">A download link will be emailed to you immediately after purchase.</span>
+          </div>
+        </div>
+
+        <!-- Product Purchase Actions -->
+        {%- form 'product', product, id: 'product-add-to-cart-form' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id | default: 99887766 }}">
+          
+          <div class="buy-buttons-wrapper" style="margin-top: 16px;">
+            <button type="submit" name="add" class="btn btn-primary btn-large js-add-to-cart" style="width: 100%; max-width: 400px; padding: 16px 32px;">
+              Add to Cart
+            </button>
+          </div>
+        {%- endform -%}
+
+        <!-- Tabs Container (Description / Details / Delivery & Support) -->
+        <div class="product-desc-tabs">
+          <div class="tab-headers">
+            <div class="tab-header active js-tab-header" data-tab="desc">Description</div>
+            <div class="tab-header js-tab-header" data-tab="details">Pattern Details</div>
+            <div class="tab-header js-tab-header" data-tab="support">Support</div>
+          </div>
+
+          <div class="tab-content active js-tab-content" id="tab-desc">
+            <p>{{ product.description | default: "Create your very own gorgeous piece with this comprehensive, easy-to-follow crochet pattern. Crafted with standard US terminology, it offers clear row-by-row instructions and high-resolution photo tutorials to ensure a relaxing, rewarding crochet experience." }}</p>
+          </div>
+
+          <div class="tab-content js-tab-content" id="tab-details">
+            <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+              <li><strong>Difficulty:</strong> Beginner / Easy</li>
+              <li><strong>Languages:</strong> English (US Terms)</li>
+              <li><strong>Format:</strong> High-resolution printable PDF</li>
+              <li><strong>Suggested Hook Size:</strong> 4.0mm (US G-6)</li>
+              <li><strong>Yarn Weight:</strong> Worsted weight yarn</li>
+            </ul>
+          </div>
+
+          <div class="tab-content js-tab-content" id="tab-support">
+            <p>Your purchase includes lifetime download access and pattern updates. If you ever run into any issues, have questions about a specific stitch, or lose your download link, reach out to our 24/7 customer support team at <strong>support@crochetstore.com</strong>. We are here to help you finish your project!</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Main Product Details",
+  "settings": []
+}
+{% endschema %}
