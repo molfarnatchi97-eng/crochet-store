@@ -3,7 +3,7 @@
   Allows users to select exactly 6 digital products from a grid to add as a bundle.
 {% endcomment %}
 
-{% assign collection = collections['crochet-patterns'] | default: collections.all %}
+{% assign collection = collections['productivity-guides'] | default: collections.all %}
 
 <!-- Sticky Top Progress Bar -->
 <div class="bundle-progress-bar js-bundle-progress-bar">
@@ -30,7 +30,7 @@
     {% for product in collection.products %}
       {% assign variant = product.selected_or_first_available_variant %}
       
-      <!-- Pattern Selection Card -->
+      <!-- Guide Selection Card -->
       <div class="pattern-card glass-panel js-pattern-card" 
            data-product-id="{{ product.id }}" 
            data-variant-id="{{ variant.id }}" 
@@ -55,14 +55,14 @@
           {% else %}
             <!-- Placeholder -->
             <div class="card-image" style="background: #E8EAE6; display: flex; align-items: center; justify-content: center; height: 100%;">
-              <span style="color: var(--text-muted); font-weight: 500;">Pattern Preview</span>
+              <span style="color: var(--text-muted); font-weight: 500;">Guide Preview</span>
             </div>
           {% endif %}
         </div>
 
         <!-- Info Details -->
         <div class="card-info">
-          <span class="badge badge-pdf card-badge">Instant PDF Download</span>
+          <span class="badge badge-pdf card-badge">Instant PDF Guide Download</span>
           <h3 class="card-title">{{ product.title }}</h3>
           
           <!-- Metadata footer of card -->
@@ -87,7 +87,7 @@
       <div class="pattern-card glass-panel js-pattern-card" 
            data-product-id="100{{ i }}" 
            data-variant-id="200{{ i }}" 
-           data-title="Crochet Pattern Design #{{ i }}">
+           data-title="Mental Productivity Guide #{{ i }}">
         
         <div class="selection-overlay">
           <div class="select-checkbox">
@@ -103,17 +103,17 @@
               <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
               <path d="M12 6v12M6 12h12"/>
             </svg>
-            <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">Pattern #{{ i }} Image</span>
+            <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">Guide #{{ i }} Image</span>
           </div>
         </div>
 
         <div class="card-info">
-          <span class="badge badge-pdf card-badge">Instant PDF Download</span>
-          <h3 class="card-title">Premium Crochet Design #{{ i }}</h3>
+          <span class="badge badge-pdf card-badge">Instant PDF Guide Download</span>
+          <h3 class="card-title">Mental Productivity Guide #{{ i }}</h3>
           
           <div class="card-meta">
             <span class="card-price">$6.50</span>
-            <span class="difficulty-rating">Easy/Medium</span>
+            <span class="difficulty-rating">All Levels</span>
           </div>
         </div>
       </div>
@@ -126,7 +126,7 @@
   <div class="container">
     <div class="checkout-bar-flex">
       <div class="checkout-bar-info">
-        <div class="checkout-bar-title">Custom 6-Pattern Bundle</div>
+        <div class="checkout-bar-title">Custom 6-Guide Productivity Bundle</div>
         <div class="checkout-bar-subtitle">
           Selected: <span class="js-selected-count">0</span> / 6 items — <strong>$29.00</strong> 
           <span style="text-decoration: line-through; opacity: 0.6; margin-left: 6px; font-weight: 400;">$39.00 Value</span>
@@ -134,7 +134,7 @@
       </div>
       <div class="checkout-bar-action">
         <button class="btn btn-primary checkout-btn js-checkout-btn" disabled>
-          Choose 6 patterns
+          Choose 6 guides
         </button>
       </div>
     </div>

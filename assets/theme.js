@@ -1,5 +1,5 @@
 /**
- * Premium Crochet Theme JS
+ * Premium Self-Improvement Theme JS
  * Handles Build-a-Bundle selection, AJAX Cart integration, and UI Micro-interactions.
  */
 
@@ -47,7 +47,7 @@ function initBuildABundle() {
       } else {
         // Check if we hit the limit
         if (selectedItems.length >= maxItems) {
-          showNotification('You can only select up to 6 patterns for this bundle.', 'warning');
+          showNotification('You can only select up to 6 guides for this bundle.', 'warning');
           return;
         }
         
@@ -100,7 +100,7 @@ function initBuildABundle() {
         checkoutBtn.innerHTML = 'Add Bundle to Cart';
       } else {
         checkoutBtn.setAttribute('disabled', 'true');
-        checkoutBtn.innerHTML = `Choose ${maxItems - count} more pattern${maxItems - count > 1 ? 's' : ''}`;
+        checkoutBtn.innerHTML = `Choose ${maxItems - count} more guide${maxItems - count > 1 ? 's' : ''}`;
       }
     }
   }
@@ -118,7 +118,7 @@ function initBuildABundle() {
         id: parseInt(variantId, 10),
         quantity: 1,
         properties: {
-          '_Bundle': 'Custom Crochet Bundle (Set of 6)'
+          '_Bundle': 'Custom Self-Improvement Bundle (Set of 6)'
         }
       }));
 

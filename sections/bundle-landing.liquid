@@ -9,11 +9,11 @@
       <div class="hero-grid">
         <div class="hero-content">
           <div class="hero-badge-group">
-            <span class="badge badge-pdf">Digital PDF Download</span>
+            <span class="badge badge-pdf">Digital PDF Guide Download</span>
             <span class="badge badge-discount">Save {{ section.settings.savings_percentage | default: "80%" }}</span>
           </div>
           
-          <h1 class="hero-title">{{ section.settings.title | default: "The Ultimate Cozy Winter Crochet Pattern Bundle" }}</h1>
+          <h1 class="hero-title">{{ section.settings.title | default: "The Ultimate Self-Improvement & Mental Productivity Bundle" }}</h1>
           
           <div class="hero-price-comparison">
             <span class="price-actual">{{ section.settings.actual_price | default: "$29" }}</span>
@@ -22,7 +22,7 @@
           </div>
 
           <p class="hero-description">
-            {{ section.settings.description | default: "Get instant access to 10 of our most-loved premium crochet patterns. Perfect for creating gorgeous blankets, cozy sweaters, and adorable plushies. Clear instructions, step-by-step photos, and print-ready files included." }}
+            {{ section.settings.description | default: "Get instant access to 10 of our best-selling mental productivity guides and growth frameworks. Perfect for mastering daily focus, building unbreakable habits, and organizing your mental workflow. Actionable worksheets, printable planners, and comprehensive digital guides included." }}
           </p>
 
           <div class="hero-cta-group">
@@ -48,7 +48,7 @@
                 <line x1="12" y1="22.08" x2="12" y2="12"/>
               </svg>
               <span style="font-weight: 700; font-size: 1.25rem; color: var(--text-color); margin-bottom: 4px;">Ultimate Bundle Package</span>
-              <span style="color: var(--text-muted); font-size: 0.95rem;">10 Premium PDFs Included</span>
+              <span style="color: var(--text-muted); font-size: 0.95rem;">10 Premium Guides Included</span>
             </div>
           {% endif %}
         </div>
@@ -91,7 +91,7 @@
             </svg>
           </div>
           <div class="trust-title">Lifetime Access</div>
-          <div class="trust-desc">Redownload your patterns anytime, including any future pattern updates.</div>
+          <div class="trust-desc">Redownload your guides anytime, including any future guide updates.</div>
         </div>
       </div>
     </div>
@@ -102,7 +102,7 @@
     <div class="container">
       <div class="section-header">
         <h2>What's Included in This Bundle</h2>
-        <p style="color: var(--text-muted);">Each pattern includes detailed step-by-step instructions, standard US terms, and full support.</p>
+        <p style="color: var(--text-muted);">Each guide includes actionable step-by-step frameworks, printable worksheets, and lifetime digital updates.</p>
       </div>
 
       <div class="breakdown-grid">
@@ -112,18 +112,18 @@
               <div class="breakdown-item-img">
                 {% if block.settings.item_image %}
                   <img src="{{ block.settings.item_image | img_url: '400x300', crop: 'center' }}" 
-                       alt="{{ block.settings.title | escape }}"
+                       alt="{{ block.settings.title | escape }}" 
                        loading="lazy">
                 {% else %}
                   <div style="background: linear-gradient(135deg, #E8EAE6 0%, #FAF6F0 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--text-muted);">
-                    Pattern Preview
+                    Guide Preview
                   </div>
                 {% endif %}
               </div>
               <div class="breakdown-item-info">
-                <span class="badge badge-pdf" style="align-self: flex-start;">PDF Pattern Included</span>
-                <div class="breakdown-item-title">{{ block.settings.title | default: "Premium Pattern Design" }}</div>
-                <div class="breakdown-item-desc">{{ block.settings.description | default: "Step-by-step instructions with sizing details, recommended yarns, and helper stitch graphs." }}</div>
+                <span class="badge badge-pdf" style="align-self: flex-start;">PDF Guide Included</span>
+                <div class="breakdown-item-title">{{ block.settings.title | default: "Premium Productivity Guide" }}</div>
+                <div class="breakdown-item-desc">{{ block.settings.description | default: "Step-by-step frameworks with printable habit trackers, productivity templates, and implementation guides." }}</div>
               </div>
             </div>
           {% endfor %}
@@ -133,13 +133,13 @@
             <div class="breakdown-item">
               <div class="breakdown-item-img">
                 <div style="background: linear-gradient(135deg, #E8EAE6 0%, #FAEDCD 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--text-muted);">
-                  Pattern #{{ i }}
+                  Guide #{{ i }}
                 </div>
               </div>
               <div class="breakdown-item-info">
-                <span class="badge badge-pdf" style="align-self: flex-start;">PDF Pattern Included</span>
-                <div class="breakdown-item-title">Cozy Crochet Design Pattern #{{ i }}</div>
-                <div class="breakdown-item-desc">Highly detailed step-by-step pattern guide containing digital diagrams, yarn color recommendations, and video tutorial access codes.</div>
+                <span class="badge badge-pdf" style="align-self: flex-start;">PDF Guide Included</span>
+                <div class="breakdown-item-title">Mental Productivity Framework #{{ i }}</div>
+                <div class="breakdown-item-desc">Highly actionable step-by-step guide containing deep work frameworks, habit implementation blueprints, and daily productivity worksheets.</div>
               </div>
             </div>
           {% endfor %}
@@ -157,7 +157,7 @@
       "type": "text",
       "id": "title",
       "label": "Bundle Title",
-      "default": "The Ultimate Cozy Winter Crochet Pattern Bundle"
+      "default": "The Ultimate Self-Improvement & Mental Productivity Bundle"
     },
     {
       "type": "textarea",
@@ -207,18 +207,18 @@
         {
           "type": "text",
           "id": "title",
-          "label": "Pattern Title",
-          "default": "Premium Pattern Name"
+          "label": "Guide Title",
+          "default": "Premium Productivity Guide"
         },
         {
           "type": "textarea",
           "id": "description",
-          "label": "Pattern Description"
+          "label": "Guide Description"
         },
         {
           "type": "image_picker",
           "id": "item_image",
-          "label": "Pattern Image"
+          "label": "Guide Image"
         }
       ]
     }
