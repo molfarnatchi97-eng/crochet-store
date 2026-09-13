@@ -1,0 +1,67 @@
+{% comment %}
+  Main Collection Section
+  Displays collection products using the theme's glassmorphism card styling.
+{% endcomment %}
+
+<div class="collection-page-section" style="padding: 60px 0 100px;">
+  <div class="container">
+    <!-- Collection Header -->
+    <div class="collection-header" style="text-align: center; margin-bottom: 48px;">
+      <h1 style="font-size: var(--font-h1); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 16px;">
+        {{ collection.title | default: "All Products" }}
+      </h1>
+      {% if collection.description != blank %}
+        <div class="collection-desc" style="max-width: 650px; margin: 0 auto; color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">
+          {{ collection.description }}
+        </div>
+      {% else %}
+        <p style="max-width: 650px; margin: 0 auto; color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">
+          Browse our complete collection of digital productivity guides, focus frameworks, and habit systems.
+        </p>
+      {% endif %}
+    </div>
+
+    <!-- Collection Grid -->
+    <div class="bundle-grid" style="margin-top: 0;">
+      {% if collection.products.size > 0 %}
+        {% for product in collection.products %}
+          <a href="{{ product.url }}" class="pattern-card glass-panel" style="text-decoration: none; color: inherit;">
+            <div class="card-image-wrapper">
+              {% if product.featured_image %}
+                <img src="{{ product.featured_image | img_url: '600x600', crop: 'center' }}" 
+                     alt="{{ product.title | escape }}" 
+                     class="card-image"
+                     loading="lazy">
+              {% else %}
+                <div class="card-image" style="background: linear-gradient(135deg, #FAEDCD 0%, #FAF6F0 100%); display: flex; align-items: center; justify-content: center; height: 100%;">
+                  <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">No Image</span>
+                </div>
+              {% endif %}
+            </div>
+            <div class="card-info">
+              <span class="badge badge-pdf card-badge">Instant PDF Download</span>
+              <h3 class="card-title">{{ product.title }}</h3>
+              <div class="card-meta">
+                <span class="card-price">{{ product.price | money }}</span>
+                <span class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;">View</span>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--gradient-card); border-radius: var(--radius-md); border: 1px solid var(--glass-border);">
+          <h3 style="margin-bottom: 12px; color: var(--text-color);">No products found</h3>
+          <p style="color: var(--text-muted); margin-bottom: 24px;">There are no products in this collection yet. Add products in your Shopify admin to display them here.</p>
+          <a href="/pages/build-a-bundle" class="btn btn-primary">Build a Bundle</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Grid",
+  "settings": []
+}
+{% endschema %}

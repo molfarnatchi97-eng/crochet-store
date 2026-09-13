@@ -3,7 +3,7 @@
   Allows users to select exactly 6 digital products from a grid to add as a bundle.
 {% endcomment %}
 
-{% assign collection = collections['productivity-guides'] | default: collections.all %}
+{% assign collection = collections['all-products'] | default: collections['productivity-guides'] | default: collections.all %}
 
 <!-- Sticky Top Progress Bar -->
 <div class="bundle-progress-bar js-bundle-progress-bar">
