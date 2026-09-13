@@ -1,5 +1,6 @@
 {% comment %}
   Header section with transparent glassmorphism navigation bar.
+  Connects to Shopify Navigation (Main Menu) dynamically with robust fallback.
 {% endcomment %}
 
 <header class="site-header js-site-header">
@@ -15,10 +16,20 @@
     <!-- Navigation Menu -->
     <nav>
       <ul class="nav-menu">
-        <li><a href="/" class="nav-link">Home</a></li>
-        <li><a href="/collections/all-products" class="nav-link">Guides</a></li>
-        <li><a href="/pages/build-a-bundle" class="nav-link" style="color: var(--primary-accent); font-weight: 600;">Build a Bundle</a></li>
-        <li><a href="/pages/winter-sale" class="nav-link">Winter Sale</a></li>
+        {%- assign header_menu = linklists[section.settings.menu] | default: linklists['main-menu'] -%}
+        {%- if header_menu != blank and header_menu.links.size > 0 -%}
+          {%- for link in header_menu.links -%}
+            <li>
+              <a href="{{ link.url }}" class="nav-link{% if link.active %} active{% endif %}" {% if link.url contains 'build-a-bundle' %}style="color: var(--primary-accent); font-weight: 600;"{% endif %}>
+                {{ link.title }}
+              </a>
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/collections/all-products" class="nav-link">Guides</a></li>
+          <li><a href="/pages/build-a-bundle" class="nav-link" style="color: var(--primary-accent); font-weight: 600;">Build a Bundle</a></li>
+        {%- endif -%}
       </ul>
     </nav>
 
@@ -39,6 +50,13 @@
 {% schema %}
 {
   "name": "Header",
-  "settings": []
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
 }
 {% endschema %}

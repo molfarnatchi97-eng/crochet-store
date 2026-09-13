@@ -1,5 +1,6 @@
 {% comment %}
   Standard styled footer.
+  Connects to Shopify Navigation menus with clean fallbacks.
 {% endcomment %}
 
 <footer class="site-footer">
@@ -22,8 +23,15 @@
       <div class="footer-col">
         <div class="footer-col-title">Shop Guides</div>
         <ul class="footer-links">
-          <li><a href="/collections/all-products">All Products</a></li>
-          <li><a href="/pages/build-a-bundle">Build-a-Bundle</a></li>
+          {%- assign footer_menu = linklists[section.settings.footer_menu] | default: linklists['footer'] -%}
+          {%- if footer_menu != blank and footer_menu.links.size > 0 -%}
+            {%- for link in footer_menu.links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="/collections/all-products">All Products</a></li>
+            <li><a href="/pages/build-a-bundle">Build-a-Bundle</a></li>
+          {%- endif -%}
         </ul>
       </div>
 
@@ -31,9 +39,16 @@
       <div class="footer-col">
         <div class="footer-col-title">Customer Service</div>
         <ul class="footer-links">
-          <li><a href="/pages/contact">Contact Support</a></li>
-          <li><a href="/policies/terms-of-service">Terms of Service</a></li>
-          <li><a href="/policies/privacy-policy">Privacy Policy</a></li>
+          {%- assign support_menu = linklists[section.settings.support_menu] | default: linklists['customer-service'] -%}
+          {%- if support_menu != blank and support_menu.links.size > 0 -%}
+            {%- for link in support_menu.links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="/pages/contact">Contact Support</a></li>
+            <li><a href="/policies/terms-of-service">Terms of Service</a></li>
+            <li><a href="/policies/privacy-policy">Privacy Policy</a></li>
+          {%- endif -%}
         </ul>
       </div>
     </div>
@@ -56,6 +71,18 @@
 {% schema %}
 {
   "name": "Footer",
-  "settings": []
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "footer_menu",
+      "label": "Shop Menu",
+      "default": "footer"
+    },
+    {
+      "type": "link_list",
+      "id": "support_menu",
+      "label": "Customer Service Menu"
+    }
+  ]
 }
 {% endschema %}
