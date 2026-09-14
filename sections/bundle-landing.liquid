@@ -26,9 +26,11 @@
           </p>
 
           <div class="hero-cta-group">
-            {%- form 'product', product, id: 'bundle-checkout-form' -%}
-              <input type="hidden" name="id" value="{{ section.settings.bundle_product.selected_or_first_available_variant.id | default: 12345678 }}">
-              <button type="submit" class="btn btn-primary btn-large hero-buy-btn">
+            {%- assign bundle_prod = section.settings.bundle_product | default: product -%}
+            {%- assign bundle_variant = bundle_prod.selected_or_first_available_variant | default: bundle_prod.variants.first -%}
+            {%- form 'product', bundle_prod, id: 'bundle-checkout-form' -%}
+              <input type="hidden" name="id" value="{{ bundle_variant.id }}">
+              <button type="submit" class="btn btn-primary btn-large hero-buy-btn" {% unless bundle_variant %}disabled{% endunless %}>
                 Get the Bundle - {{ section.settings.actual_price | default: "$29" }}
               </button>
             {%- endform -%}

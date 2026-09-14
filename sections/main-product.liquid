@@ -3,7 +3,7 @@
   Emphasizes digital PDF delivery, clean layout, and trust factors.
 {% endcomment %}
 
-{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign current_variant = product.selected_or_first_available_variant | default: product.variants.first -%}
 
 <div class="product-detail-section">
   <div class="container">
@@ -91,11 +91,15 @@
 
         <!-- Product Purchase Actions -->
         {%- form 'product', product, id: 'product-add-to-cart-form' -%}
-          <input type="hidden" name="id" value="{{ current_variant.id | default: 99887766 }}">
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
           
           <div class="buy-buttons-wrapper" style="margin-top: 16px;">
-            <button type="submit" name="add" class="btn btn-primary btn-large js-add-to-cart" style="width: 100%; max-width: 400px; padding: 16px 32px;">
-              Add to Cart
+            <button type="submit" name="add" class="btn btn-primary btn-large js-add-to-cart" style="width: 100%; max-width: 400px; padding: 16px 32px;" {% unless current_variant %}disabled{% endunless %}>
+              {% if current_variant %}
+                Add to Cart
+              {% else %}
+                Unavailable
+              {% endif %}
             </button>
           </div>
         {%- endform -%}

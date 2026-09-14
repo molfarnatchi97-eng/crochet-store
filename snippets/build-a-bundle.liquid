@@ -3,7 +3,16 @@
   Allows users to select exactly 6 digital products from a grid to add as a bundle.
 {% endcomment %}
 
-{% assign collection = collections['all-products'] | default: collections['productivity-guides'] | default: collections.all %}
+{% assign bundle_collection = collections['all-products'] %}
+{% if bundle_collection == nil or bundle_collection.products.size == 0 %}
+  {% assign bundle_collection = collections['all'] %}
+{% endif %}
+{% if bundle_collection == nil or bundle_collection.products.size == 0 %}
+  {% assign bundle_collection = collections['productivity-guides'] %}
+{% endif %}
+{% if bundle_collection == nil or bundle_collection.products.size == 0 %}
+  {% assign bundle_collection = collections.first %}
+{% endif %}
 
 <!-- Sticky Top Progress Bar -->
 <div class="bundle-progress-bar js-bundle-progress-bar">
@@ -26,10 +35,10 @@
 
 <!-- Product Selection Grid -->
 <div class="bundle-grid js-bundle-grid">
-  {% if collection.products.size > 0 %}
-    {% for product in collection.products %}
-      {% assign variant = product.selected_or_first_available_variant %}
-      
+  {% if bundle_collection.products.size > 0 %}
+    {% for product in bundle_collection.products %}
+      {% assign variant = product.selected_or_first_available_variant | default: product.variants.first %}
+      {% if variant.id %}
       <!-- Guide Selection Card -->
       <div class="pattern-card glass-panel js-pattern-card" 
            data-product-id="{{ product.id }}" 
@@ -80,13 +89,14 @@
           </div>
         </div>
       </div>
+      {% endif %}
     {% endfor %}
   {% else %}
     <!-- Mock Products if store is empty / testing -->
     {% for i in (1..12) %}
       <div class="pattern-card glass-panel js-pattern-card" 
            data-product-id="100{{ i }}" 
-           data-variant-id="200{{ i }}" 
+           data-variant-id="" 
            data-title="Mental Productivity Guide #{{ i }}">
         
         <div class="selection-overlay">

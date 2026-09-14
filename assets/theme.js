@@ -38,6 +38,10 @@ function initBuildABundle() {
       e.preventDefault();
       
       const variantId = card.dataset.variantId;
+      if (!variantId || variantId.trim() === '') {
+        showNotification('This preview guide does not have an active variant in Shopify. Please add real products in Shopify Admin.', 'warning');
+        return;
+      }
       const index = selectedItems.indexOf(variantId);
 
       if (index > -1) {
@@ -114,13 +118,23 @@ function initBuildABundle() {
       checkoutBtn.innerHTML = '<span class="loading-spinner">Adding Bundle...</span>';
 
       // Prepare items for Shopify /cart/add.js — each must be a real variant ID
-      const itemsPayload = selectedItems.map(variantId => ({
-        id: parseInt(variantId, 10),
-        quantity: 1,
-        properties: {
-          '_Bundle': 'Custom Bundle (Set of 6)'
+      const itemsPayload = [];
+      for (const variantId of selectedItems) {
+        const parsedId = parseInt(variantId, 10);
+        if (!parsedId || isNaN(parsedId)) {
+          showNotification('One or more selected guides does not have a valid Shopify variant ID.', 'error');
+          checkoutBtn.removeAttribute('disabled');
+          checkoutBtn.innerHTML = 'Add Bundle to Cart';
+          return;
         }
-      }));
+        itemsPayload.push({
+          id: parsedId,
+          quantity: 1,
+          properties: {
+            '_Bundle': 'Custom Bundle (Set of 6)'
+          }
+        });
+      }
 
       // AJAX call to Shopify Cart API
       fetch('/cart/add.js', {
