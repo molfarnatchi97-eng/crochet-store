@@ -113,40 +113,55 @@ function initBuildABundle() {
       checkoutBtn.setAttribute('disabled', 'true');
       checkoutBtn.innerHTML = '<span class="loading-spinner">Adding Bundle...</span>';
 
-      // Prepare items for AJAX cart payload
+      // Prepare items for Shopify /cart/add.js — each must be a real variant ID
       const itemsPayload = selectedItems.map(variantId => ({
         id: parseInt(variantId, 10),
         quantity: 1,
         properties: {
-          '_Bundle': 'Custom Self-Improvement Bundle (Set of 6)'
+          '_Bundle': 'Custom Bundle (Set of 6)'
         }
       }));
 
-      // AJAX call to Shopify Cart
+      // AJAX call to Shopify Cart API
       fetch('/cart/add.js', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
+          'Accept': 'application/json'
         },
         body: JSON.stringify({ items: itemsPayload })
       })
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
+        // Read the body regardless of status so we can surface the Shopify error message
+        return response.json().then(data => ({ ok: response.ok, status: response.status, data }));
       })
-      .then(data => {
+      .then(({ ok, status, data }) => {
+        if (!ok) {
+          // Shopify returns { status, message, description } on errors
+          const shopifyMsg = data.description || data.message || 'Unknown error from Shopify.';
+          console.error('[Bundle] Cart error', status, data);
+
+          if (status === 404) {
+            showNotification('One or more selected guides could not be found. Please refresh and try again.', 'error');
+          } else if (status === 422) {
+            showNotification(shopifyMsg, 'error');
+          } else {
+            showNotification('Something went wrong. Please try again.', 'error');
+          }
+
+          checkoutBtn.removeAttribute('disabled');
+          checkoutBtn.innerHTML = 'Add Bundle to Cart';
+          return;
+        }
+
         showNotification('Bundle successfully added to your cart!', 'success');
-        // Redirect to cart or drawer-open
         setTimeout(() => {
           window.location.href = '/cart';
         }, 800);
       })
       .catch(error => {
-        console.error('Error adding bundle to cart:', error);
-        showNotification('Something went wrong. Please try again.', 'error');
+        console.error('[Bundle] Network error:', error);
+        showNotification('Network error. Please check your connection and try again.', 'error');
         checkoutBtn.removeAttribute('disabled');
         checkoutBtn.innerHTML = 'Add Bundle to Cart';
       });
