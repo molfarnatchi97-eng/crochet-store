@@ -93,14 +93,15 @@
         {%- form 'product', product, id: 'product-add-to-cart-form' -%}
           <input type="hidden" name="id" value="{{ current_variant.id }}">
           
-          <div class="buy-buttons-wrapper" style="margin-top: 16px;">
-            <button type="submit" name="add" class="btn btn-primary btn-large js-add-to-cart" style="width: 100%; max-width: 400px; padding: 16px 32px;" {% unless current_variant %}disabled{% endunless %}>
+          <div class="buy-buttons-wrapper" style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px; max-width: 400px;">
+            <button type="submit" name="add" class="btn btn-primary btn-large js-add-to-cart" style="width: 100%; padding: 16px 32px;" {% unless current_variant %}disabled{% endunless %}>
               {% if current_variant %}
                 Add to Cart
               {% else %}
                 Unavailable
               {% endif %}
             </button>
+            {{ form | payment_button }}
           </div>
         {%- endform -%}
 

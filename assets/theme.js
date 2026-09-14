@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initBuildABundle();
+  initProductForm();
   initProductTabs();
   initThumbnailGallery();
   initHeaderScroll();
@@ -181,6 +182,86 @@ function initBuildABundle() {
       });
     });
   }
+}
+
+/* ==========================================================================
+   Product Page Add to Cart (AJAX)
+   ========================================================================== */
+function initProductForm() {
+  const form = document.getElementById('product-add-to-cart-form');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    // If submitter was dynamic checkout button (Buy Now), let Shopify handle it directly to /checkout
+    if (e.submitter && e.submitter.getAttribute('name') !== 'add') {
+      return;
+    }
+
+    e.preventDefault();
+    const btn = form.querySelector('.js-add-to-cart');
+    const originalText = btn ? btn.innerHTML : 'Add to Cart';
+
+    if (btn) {
+      btn.setAttribute('disabled', 'true');
+      btn.innerHTML = '<span class="loading-spinner">Adding...</span>';
+    }
+
+    const formData = new FormData(form);
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json'
+      },
+      body: formData
+    })
+    .then(response => {
+      return response.json().then(data => ({ ok: response.ok, status: response.status, data }));
+    })
+    .then(({ ok, status, data }) => {
+      if (!ok) {
+        const errorMsg = data.description || data.message || 'Could not add product to cart.';
+        showNotification(errorMsg, 'error');
+        if (btn) {
+          btn.removeAttribute('disabled');
+          btn.innerHTML = originalText;
+        }
+        return;
+      }
+
+      // Update cart count badge in header
+      fetch('/cart.js')
+        .then(res => res.json())
+        .then(cart => {
+          const cartCount = document.querySelector('.js-header-cart-count');
+          if (cartCount) {
+            cartCount.textContent = cart.item_count;
+            cartCount.style.animation = 'none';
+            cartCount.offsetHeight; // trigger reflow
+            cartCount.style.animation = 'scaleUp 0.3s ease-out';
+          }
+        })
+        .catch(() => {});
+
+      showNotification('Guide successfully added to your cart!', 'success');
+
+      if (btn) {
+        btn.removeAttribute('disabled');
+        btn.innerHTML = '✓ Added to Cart';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 2200);
+      }
+    })
+    .catch(error => {
+      console.error('[Product Form] Network error:', error);
+      showNotification('Network error. Please try again.', 'error');
+      if (btn) {
+        btn.removeAttribute('disabled');
+        btn.innerHTML = originalText;
+      }
+    });
+  });
 }
 
 /* ==========================================================================
