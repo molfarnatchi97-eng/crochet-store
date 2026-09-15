@@ -363,6 +363,12 @@
     <script>
       const originalFetch = window.fetch;
       window.fetch = function(url, options) {
+        if (url.includes('/cart/clear.js')) {
+          return Promise.resolve(new Response(JSON.stringify({ token: 'mock-token', items: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
         if (url.includes('/cart/add.js')) {
           return new Promise((resolve) => {
             setTimeout(() => {
@@ -376,7 +382,7 @@
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
               }));
-            }, 1200);
+            }, 800);
           });
         }
         return originalFetch.apply(this, arguments);

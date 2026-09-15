@@ -116,9 +116,13 @@ function initBuildABundle() {
       if (selectedItems.length !== maxItems) return;
 
       checkoutBtn.setAttribute('disabled', 'true');
-      checkoutBtn.innerHTML = '<span class="loading-spinner">Adding Bundle...</span>';
+      checkoutBtn.innerHTML = '<span class="loading-spinner">Preparing Checkout...</span>';
 
-      // Prepare items for Shopify /cart/add.js — each must be a real variant ID
+      // ── Step 1: Generate single unique bundleSessionId for all 6 items ─────
+      // Exactly one ID is generated here and assigned to all 6 line items
+      const bundleSessionId = Date.now().toString();
+
+      // ── Step 2: Validate all 6 variant IDs and build items payload ──────────
       const itemsPayload = [];
       for (const variantId of selectedItems) {
         const parsedId = parseInt(variantId, 10);
@@ -132,27 +136,43 @@ function initBuildABundle() {
           id: parsedId,
           quantity: 1,
           properties: {
-            '_Bundle': 'Custom Bundle (Set of 6)'
+            '_Bundle': 'Custom Bundle (Set of 6)',
+            '_BundleID': bundleSessionId
           }
         });
       }
 
-      // AJAX call to Shopify Cart API
-      fetch('/cart/add.js', {
+      // ── Step 3: Standalone Bundle Cart Isolation ────────────────────────────
+      // Clear all previous cart items so the checkout contains ONLY the 6 bundle items.
+      // This eliminates any prior items or old bundle configurations.
+      fetch('/cart/clear.js', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
-        },
-        body: JSON.stringify({ items: itemsPayload })
+        }
       })
       .then(response => {
-        // Read the body regardless of status so we can surface the Shopify error message
+        if (!response.ok) {
+          throw new Error('Could not reset cart for bundle checkout.');
+        }
+
+        // ── Step 4: Add the exactly 6 real product variants ──────────────────
+        return fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ items: itemsPayload })
+        });
+      })
+      .then(response => {
+        // Read the body regardless of status so we can surface Shopify error messages
         return response.json().then(data => ({ ok: response.ok, status: response.status, data }));
       })
       .then(({ ok, status, data }) => {
         if (!ok) {
-          // Shopify returns { status, message, description } on errors
           const shopifyMsg = data.description || data.message || 'Unknown error from Shopify.';
           console.error('[Bundle] Cart error', status, data);
 
@@ -169,13 +189,12 @@ function initBuildABundle() {
           return;
         }
 
-        showNotification('Bundle successfully added to your cart!', 'success');
-        setTimeout(() => {
-          window.location.href = '/cart';
-        }, 800);
+        // ── Step 5: Direct Redirect to Shopify Checkout ──────────────────────
+        // Standalone flow: bypass normal cart view and take customer directly to checkout
+        window.location.href = '/checkout';
       })
       .catch(error => {
-        console.error('[Bundle] Network error:', error);
+        console.error('[Bundle] Error during bundle checkout submission:', error);
         showNotification('Network error. Please check your connection and try again.', 'error');
         checkoutBtn.removeAttribute('disabled');
         checkoutBtn.innerHTML = 'Add Bundle to Cart';

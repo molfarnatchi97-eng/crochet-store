@@ -1,0 +1,25 @@
+# Shopify Bundle Discount App
+# This app deploys a single Shopify Function (Order Discount) that applies
+# a fixed $29.00 price to any exactly 6 cart items tagged with the _Bundle property.
+#
+# HOW TO CONFIGURE:
+# 1. Go to https://partners.shopify.com
+# 2. Create a new App → "Create app manually"
+# 3. Copy the Client ID from the app's "Overview" page
+# 4. Replace YOUR_CLIENT_ID_HERE below with that Client ID
+# 5. Run: shopify app deploy
+
+name = "Bundle $29 Discount"
+client_id = "YOUR_CLIENT_ID_HERE"
+application_url = "https://shopify.dev/apps/default-app-home"
+embedded = false
+
+[access_scopes]
+# No storefront or admin scopes needed — Functions run server-side on Shopify infra
+scopes = ""
+
+[webhooks]
+api_version = "2024-07"
+
+[pos]
+embedded = false
