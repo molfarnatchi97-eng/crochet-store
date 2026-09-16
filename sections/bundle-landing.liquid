@@ -57,7 +57,7 @@
           </p>
 
           <div class="hero-cta-group">
-            {%- if bundle_prod != blank and bundle_prod.title != blank -%}
+            {%- if template.name != 'index' and bundle_prod != blank and bundle_prod.title != blank -%}
               {%- assign bundle_variant = bundle_prod.selected_or_first_available_variant | default: bundle_prod.variants.first -%}
               {%- form 'product', bundle_prod, id: 'bundle-checkout-form' -%}
                 <input type="hidden" name="id" value="{{ bundle_variant.id }}">
@@ -66,8 +66,8 @@
                 </button>
               {%- endform -%}
             {%- else -%}
-              <a href="#build-bundle-section" class="btn btn-primary btn-large hero-buy-btn">
-                Get the Bundle - {{ section.settings.actual_price | default: "$29" }}
+              <a href="{{ section.settings.bundle_page_url | default: '/pages/build-a-bundle' }}" class="btn btn-primary btn-large hero-buy-btn">
+                Build Your Bundle - {{ section.settings.actual_price | default: "$29" }}
               </a>
             {%- endif -%}
           </div>
@@ -171,6 +171,30 @@
               </div>
             </a>
           {% endfor %}
+
+          {% if template.name == 'index' or section.settings.show_bundle_card %}
+            <!-- Bundle Upsell Card (Reference: demo-product.html) -->
+            {%- assign bundle_target_url = section.settings.bundle_page_url | default: '/pages/build-a-bundle' -%}
+            <a href="{{ bundle_target_url }}" class="breakdown-item bundle-upsell-card" style="text-decoration: none; color: inherit; cursor: pointer; background: linear-gradient(135deg, #FAEDCD 0%, #E8EAE6 100%); border: 2px solid var(--primary-accent); display: flex; flex-direction: column;">
+              <div class="breakdown-item-img" style="background: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--primary-accent); margin-bottom: 8px;">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
+                <span style="font-weight: 700; font-size: 1rem; color: var(--text-color);">Build a 6-Guide Bundle</span>
+              </div>
+              <div class="breakdown-item-info" style="display: flex; flex-direction: column; flex-grow: 1;">
+                <span class="badge" style="background: var(--primary-light); color: var(--primary-dark); align-self: flex-start;">Save Over {{ section.settings.savings_percentage | default: "80%" }}</span>
+                <div class="breakdown-item-title">Custom 6-Guide Bundle</div>
+                <div class="breakdown-item-desc">Curate your personalized bundle of 6 guides for one low price. Instant digital PDF delivery.</div>
+                <div class="card-meta" style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(43,37,32,0.08);">
+                  <span class="card-price" style="font-weight: 700; font-size: 1.15rem; color: var(--primary-dark);">{{ section.settings.actual_price | default: "$29.00" }}</span>
+                  <span class="btn btn-primary" style="padding: 8px 18px; font-size: 0.85rem;">Build It</span>
+                </div>
+              </div>
+            </a>
+          {% endif %}
         {% elsif section.blocks.size > 0 %}
           {% for block in section.blocks %}
             <div class="breakdown-item" {{ block.shopify_attributes }}>
@@ -192,6 +216,30 @@
               </div>
             </div>
           {% endfor %}
+
+          {% if template.name == 'index' or section.settings.show_bundle_card %}
+            <!-- Bundle Upsell Card (Reference: demo-product.html) -->
+            {%- assign bundle_target_url = section.settings.bundle_page_url | default: '/pages/build-a-bundle' -%}
+            <a href="{{ bundle_target_url }}" class="breakdown-item bundle-upsell-card" style="text-decoration: none; color: inherit; cursor: pointer; background: linear-gradient(135deg, #FAEDCD 0%, #E8EAE6 100%); border: 2px solid var(--primary-accent); display: flex; flex-direction: column;">
+              <div class="breakdown-item-img" style="background: rgba(255,255,255,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--primary-accent); margin-bottom: 8px;">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
+                <span style="font-weight: 700; font-size: 1rem; color: var(--text-color);">Build a 6-Guide Bundle</span>
+              </div>
+              <div class="breakdown-item-info" style="display: flex; flex-direction: column; flex-grow: 1;">
+                <span class="badge" style="background: var(--primary-light); color: var(--primary-dark); align-self: flex-start;">Save Over {{ section.settings.savings_percentage | default: "80%" }}</span>
+                <div class="breakdown-item-title">Custom 6-Guide Bundle</div>
+                <div class="breakdown-item-desc">Curate your personalized bundle of 6 guides for one low price. Instant digital PDF delivery.</div>
+                <div class="card-meta" style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(43,37,32,0.08);">
+                  <span class="card-price" style="font-weight: 700; font-size: 1.15rem; color: var(--primary-dark);">{{ section.settings.actual_price | default: "$29.00" }}</span>
+                  <span class="btn btn-primary" style="padding: 8px 18px; font-size: 0.85rem;">Build It</span>
+                </div>
+              </div>
+            </a>
+          {% endif %}
         {% else %}
           <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; background: white; border-radius: var(--radius-md); border: 1px solid rgba(43,37,32,0.06);">
             <p style="color: var(--text-muted);">No products found in this collection. Please select a collection in the theme editor.</p>
@@ -201,19 +249,23 @@
     </div>
   </section>
 
-  <!-- Build Your 6-Guide Bundle Section -->
-  <section class="build-bundle-section" id="build-bundle-section" style="padding: 80px 0 120px; border-top: 1px solid rgba(43, 37, 32, 0.08);">
-    <div class="container">
-      <div class="section-header">
-        <h2>{{ section.settings.builder_title | default: "Build Your 6-Guide Bundle" }}</h2>
-        <p style="color: var(--text-muted); font-size: 1.05rem;">
-          {{ section.settings.builder_description | default: "Select exactly 6 guides below to customize your bundle for just $29.00." }}
-        </p>
-      </div>
+  {% unless template.name == 'index' %}
+    {% if section.settings.show_builder_system %}
+      <!-- Build Your 6-Guide Bundle Section (Only on dedicated bundle landing page, NOT on Home Page) -->
+      <section class="build-bundle-section" id="build-bundle-section" style="padding: 80px 0 120px; border-top: 1px solid rgba(43, 37, 32, 0.08);">
+        <div class="container">
+          <div class="section-header">
+            <h2>{{ section.settings.builder_title | default: "Build Your 6-Guide Bundle" }}</h2>
+            <p style="color: var(--text-muted); font-size: 1.05rem;">
+              {{ section.settings.builder_description | default: "Select exactly 6 guides below to customize your bundle for just $29.00." }}
+            </p>
+          </div>
 
-      {% render 'build-a-bundle', bundle_collection: bundle_collection, bundle_price: section.settings.actual_price %}
-    </div>
-  </section>
+          {% render 'build-a-bundle', bundle_collection: bundle_collection, bundle_price: section.settings.actual_price %}
+        </div>
+      </section>
+    {% endif %}
+  {% endunless %}
 </div>
 
 {% schema %}
@@ -302,6 +354,25 @@
       "id": "builder_description",
       "label": "Bundle Builder Subtitle",
       "default": "Select exactly 6 guides below to customize your bundle for just $29.00."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bundle_card",
+      "label": "Show Bundle Upsell Card in Products Grid",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_builder_system",
+      "label": "Show Full 6-Guide Selection System",
+      "default": true,
+      "info": "Automatically hidden on the Home Page to keep it clean and direct customers to the dedicated Build-a-Bundle page."
+    },
+    {
+      "type": "url",
+      "id": "bundle_page_url",
+      "label": "Dedicated Build-a-Bundle Page URL",
+      "info": "Leave blank to default to /pages/build-a-bundle"
     }
   ],
   "blocks": [
