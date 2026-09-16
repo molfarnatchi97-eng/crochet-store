@@ -1,20 +1,37 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
-    "sections": {
-      "header": {
-        "type": "header",
-        "settings": {}
-      },
-      "footer": {
-        "type": "footer",
-        "settings": {}
-      }
-    },
     "settings": {
       "color_bg": "#FAF6F0",
       "color_text": "#2B2520",
       "color_primary": "#D4A373",
       "color_secondary": "#E8EAE6"
-    }
+    },
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "menu": "main-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "footer_menu_title": "Shop Guides",
+          "footer_menu": "footer",
+          "support_menu_title": "Customer Service",
+          "support_menu": "customer-service"
+        }
+      }
+    },
+    "content_for_index": []
   }
 }
