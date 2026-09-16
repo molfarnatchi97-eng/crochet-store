@@ -8,8 +8,8 @@
     "dev": "shopify app dev",
     "info": "shopify app info"
   },
-  "dependencies": {
-    "@shopify/cli": "3.x",
-    "@shopify/app": "3.x"
+  "devDependencies": {
+    "@shopify/cli": "^3.60.0",
+    "@shopify/app": "^3.60.0"
   }
 }

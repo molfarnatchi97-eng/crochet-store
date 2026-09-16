@@ -44,11 +44,13 @@ function initBuildABundle() {
         return;
       }
       const index = selectedItems.indexOf(variantId);
+      const statusBtn = card.querySelector('.card-select-status');
 
       if (index > -1) {
         // Deselect item
         selectedItems.splice(index, 1);
         card.classList.remove('selected');
+        if (statusBtn) statusBtn.textContent = 'Select';
       } else {
         // Check if we hit the limit
         if (selectedItems.length >= maxItems) {
@@ -59,6 +61,7 @@ function initBuildABundle() {
         // Select item
         selectedItems.push(variantId);
         card.classList.add('selected');
+        if (statusBtn) statusBtn.textContent = '✓ Selected';
       }
 
       updateProgressBar();
@@ -79,9 +82,9 @@ function initBuildABundle() {
       }
     }
 
-    // Update text indicators
+    // Update text indicators (e.g. 0/6 Selected, 3/6 Selected, 6/6 Selected)
     if (progressText) {
-      progressText.textContent = `${count} of ${maxItems} Selected`;
+      progressText.textContent = `${count}/${maxItems} Selected`;
     }
     if (selectedCountText) {
       selectedCountText.textContent = count;
@@ -103,6 +106,9 @@ function initBuildABundle() {
       if (count === maxItems) {
         checkoutBtn.removeAttribute('disabled');
         checkoutBtn.innerHTML = 'Add Bundle to Cart';
+      } else if (count === 0) {
+        checkoutBtn.setAttribute('disabled', 'true');
+        checkoutBtn.innerHTML = 'Choose 6 guides';
       } else {
         checkoutBtn.setAttribute('disabled', 'true');
         checkoutBtn.innerHTML = `Choose ${maxItems - count} more guide${maxItems - count > 1 ? 's' : ''}`;

@@ -87,9 +87,11 @@ export function run(input) {
   return {
     discounts: [
       {
-        targets: bundleLines.map((line) => ({
-          cartLine: { id: line.id },
-        })),
+        targets: bundleLines
+          .filter((line) => line.merchandise?.id)
+          .map((line) => ({
+            productVariant: { id: line.merchandise.id },
+          })),
         value: {
           fixedAmount: {
             amount: discountAmount,

@@ -1,0 +1,38 @@
+name: Deploy Shopify Bundle Function
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'bundle-discount-app/**'
+      - '.github/workflows/deploy-bundle-function.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build & Deploy Shopify Function
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bundle-discount-app
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies & Shopify CLI
+        run: |
+          npm install
+          npm install -g @shopify/cli@latest
+
+      - name: Deploy Shopify Function Extension
+        env:
+          SHOPIFY_CLI_PARTNERS_TOKEN: ${{ secrets.SHOPIFY_CLI_PARTNERS_TOKEN }}
+        run: |
+          shopify app deploy --force

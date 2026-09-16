@@ -1,18 +1,15 @@
-# Shopify Function Extension — Product Discount
-# Target: purchase.product-discount.run
-# This lets us apply a discount to SPECIFIC cart lines only (the 6 bundle items),
-# leaving all other cart items at their normal prices.
-#
-# api_version: 2024-07 is a stable, broadly supported version.
-
 api_version = "2024-07"
 
 [[extensions]]
-type = "function"
 name = "Bundle $29 Discount"
 handle = "bundle-discount"
-api_version = "2024-07"
+type = "function"
 
-[extensions.targeting]
-module = "./src/index.js"
+[[extensions.targeting]]
 target = "purchase.product-discount.run"
+input_query = "input.graphql"
+export = "run"
+
+[extensions.build]
+command = ""
+path = "dist/function.wasm"

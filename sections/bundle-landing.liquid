@@ -2,6 +2,37 @@
   Pre-made Curated Bundle Landing Page
 {% endcomment %}
 
+{%- assign bundle_collection = section.settings.collection -%}
+{%- if bundle_collection != blank and bundle_collection.products == blank -%}
+  {%- assign bundle_collection = collections[section.settings.collection] -%}
+{%- endif -%}
+{%- if bundle_collection == blank or bundle_collection.products_count == 0 -%}
+  {%- assign bundle_collection = collections['all-products'] -%}
+{%- endif -%}
+{%- if bundle_collection == blank or bundle_collection.products_count == 0 -%}
+  {%- assign bundle_collection = collections['all'] -%}
+{%- endif -%}
+{%- if bundle_collection == blank or bundle_collection.products_count == 0 -%}
+  {%- assign bundle_collection = collections['productivity-guides'] -%}
+{%- endif -%}
+{%- if bundle_collection == blank or bundle_collection.products_count == 0 -%}
+  {%- assign bundle_collection = collections.first -%}
+{%- endif -%}
+
+{%- assign bundle_prod = section.settings.bundle_product -%}
+{%- if bundle_prod != blank and bundle_prod.title == blank -%}
+  {%- assign bundle_prod = all_products[section.settings.bundle_product] -%}
+{%- endif -%}
+{%- if bundle_prod == blank and product != blank -%}
+  {%- assign bundle_prod = product -%}
+{%- endif -%}
+{%- if bundle_prod == blank and bundle_collection != blank and bundle_collection.products.size > 0 -%}
+  {%- assign bundle_prod = bundle_collection.products.first -%}
+{%- endif -%}
+{%- if bundle_prod == blank and collections.all.products.size > 0 -%}
+  {%- assign bundle_prod = collections.all.products.first -%}
+{%- endif -%}
+
 <div class="bundle-landing-wrapper">
   <!-- Hero Section -->
   <section class="landing-hero">
@@ -26,14 +57,19 @@
           </p>
 
           <div class="hero-cta-group">
-            {%- assign bundle_prod = section.settings.bundle_product | default: product -%}
-            {%- assign bundle_variant = bundle_prod.selected_or_first_available_variant | default: bundle_prod.variants.first -%}
-            {%- form 'product', bundle_prod, id: 'bundle-checkout-form' -%}
-              <input type="hidden" name="id" value="{{ bundle_variant.id }}">
-              <button type="submit" class="btn btn-primary btn-large hero-buy-btn" {% unless bundle_variant %}disabled{% endunless %}>
+            {%- if bundle_prod != blank and bundle_prod.title != blank -%}
+              {%- assign bundle_variant = bundle_prod.selected_or_first_available_variant | default: bundle_prod.variants.first -%}
+              {%- form 'product', bundle_prod, id: 'bundle-checkout-form' -%}
+                <input type="hidden" name="id" value="{{ bundle_variant.id }}">
+                <button type="submit" class="btn btn-primary btn-large hero-buy-btn" {% unless bundle_variant.available %}disabled{% endunless %}>
+                  Get the Bundle - {{ section.settings.actual_price | default: "$29" }}
+                </button>
+              {%- endform -%}
+            {%- else -%}
+              <a href="#build-bundle-section" class="btn btn-primary btn-large hero-buy-btn">
                 Get the Bundle - {{ section.settings.actual_price | default: "$29" }}
-              </button>
-            {%- endform -%}
+              </a>
+            {%- endif -%}
           </div>
         </div>
 
@@ -103,12 +139,39 @@
   <section class="breakdown-section">
     <div class="container">
       <div class="section-header">
-        <h2>What's Included in This Bundle</h2>
-        <p style="color: var(--text-muted);">Each guide includes actionable step-by-step frameworks, printable worksheets, and lifetime digital updates.</p>
+        <h2>{{ section.settings.included_title | default: "What's Included in This Bundle" }}</h2>
+        <p style="color: var(--text-muted);">{{ section.settings.included_description | default: "Each guide includes actionable step-by-step frameworks, printable worksheets, and lifetime digital updates." }}</p>
       </div>
 
       <div class="breakdown-grid">
-        {% if section.blocks.size > 0 %}
+        {%- assign included_limit = section.settings.included_products_limit | default: 6 -%}
+        {% if bundle_collection != blank and bundle_collection.products.size > 0 %}
+          {% for product in bundle_collection.products limit: included_limit %}
+            <a href="{{ product.url }}" class="breakdown-item" style="text-decoration: none; color: inherit;">
+              <div class="breakdown-item-img">
+                {% if product.featured_image %}
+                  <img src="{{ product.featured_image | img_url: '600x450', crop: 'center' }}" 
+                       alt="{{ product.title | escape }}" 
+                       loading="lazy">
+                {% else %}
+                  <div style="background: linear-gradient(135deg, #E8EAE6 0%, #FAF6F0 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--text-muted);">
+                    {{ product.title | escape }}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="breakdown-item-info">
+                <span class="badge badge-pdf" style="align-self: flex-start;">Instant PDF Download</span>
+                <div class="breakdown-item-title">{{ product.title }}</div>
+                {% if product.description != blank %}
+                  <div class="breakdown-item-desc">{{ product.description | strip_html | truncate: 130 }}</div>
+                {% endif %}
+                <div class="breakdown-item-price" style="font-weight: 700; color: var(--text-color); margin-top: auto; padding-top: 8px;">
+                  {{ product.price | money }}
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        {% elsif section.blocks.size > 0 %}
           {% for block in section.blocks %}
             <div class="breakdown-item" {{ block.shopify_attributes }}>
               <div class="breakdown-item-img">
@@ -123,30 +186,32 @@
                 {% endif %}
               </div>
               <div class="breakdown-item-info">
-                <span class="badge badge-pdf" style="align-self: flex-start;">PDF Guide Included</span>
+                <span class="badge badge-pdf" style="align-self: flex-start;">Instant PDF Download</span>
                 <div class="breakdown-item-title">{{ block.settings.title | default: "Premium Productivity Guide" }}</div>
                 <div class="breakdown-item-desc">{{ block.settings.description | default: "Step-by-step frameworks with printable habit trackers, productivity templates, and implementation guides." }}</div>
               </div>
             </div>
           {% endfor %}
         {% else %}
-          <!-- Mocking Bundle Contents -->
-          {% for i in (1..6) %}
-            <div class="breakdown-item">
-              <div class="breakdown-item-img">
-                <div style="background: linear-gradient(135deg, #E8EAE6 0%, #FAEDCD 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--text-muted);">
-                  Guide #{{ i }}
-                </div>
-              </div>
-              <div class="breakdown-item-info">
-                <span class="badge badge-pdf" style="align-self: flex-start;">PDF Guide Included</span>
-                <div class="breakdown-item-title">Mental Productivity Framework #{{ i }}</div>
-                <div class="breakdown-item-desc">Highly actionable step-by-step guide containing deep work frameworks, habit implementation blueprints, and daily productivity worksheets.</div>
-              </div>
-            </div>
-          {% endfor %}
+          <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; background: white; border-radius: var(--radius-md); border: 1px solid rgba(43,37,32,0.06);">
+            <p style="color: var(--text-muted);">No products found in this collection. Please select a collection in the theme editor.</p>
+          </div>
         {% endif %}
       </div>
+    </div>
+  </section>
+
+  <!-- Build Your 6-Guide Bundle Section -->
+  <section class="build-bundle-section" id="build-bundle-section" style="padding: 80px 0 120px; border-top: 1px solid rgba(43, 37, 32, 0.08);">
+    <div class="container">
+      <div class="section-header">
+        <h2>{{ section.settings.builder_title | default: "Build Your 6-Guide Bundle" }}</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">
+          {{ section.settings.builder_description | default: "Select exactly 6 guides below to customize your bundle for just $29.00." }}
+        </p>
+      </div>
+
+      {% render 'build-a-bundle', bundle_collection: bundle_collection, bundle_price: section.settings.actual_price %}
     </div>
   </section>
 </div>
@@ -199,6 +264,44 @@
       "type": "product",
       "id": "bundle_product",
       "label": "Shopify Bundle Product"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Bundle Products Collection"
+    },
+    {
+      "type": "range",
+      "id": "included_products_limit",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "label": "Products to display in Breakdown",
+      "default": 6
+    },
+    {
+      "type": "text",
+      "id": "included_title",
+      "label": "Breakdown Section Heading",
+      "default": "What's Included in This Bundle"
+    },
+    {
+      "type": "textarea",
+      "id": "included_description",
+      "label": "Breakdown Section Subtitle",
+      "default": "Each guide includes actionable step-by-step frameworks, printable worksheets, and lifetime digital updates."
+    },
+    {
+      "type": "text",
+      "id": "builder_title",
+      "label": "Bundle Builder Heading",
+      "default": "Build Your 6-Guide Bundle"
+    },
+    {
+      "type": "textarea",
+      "id": "builder_description",
+      "label": "Bundle Builder Subtitle",
+      "default": "Select exactly 6 guides below to customize your bundle for just $29.00."
     }
   ],
   "blocks": [

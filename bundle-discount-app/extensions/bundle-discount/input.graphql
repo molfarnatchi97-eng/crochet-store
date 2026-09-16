@@ -1,22 +1,17 @@
-# GraphQL Input Query — Bundle Discount Function
-#
-# This query tells Shopify what data to inject into the Function at runtime.
-# The Function receives this data from Shopify's checkout engine — it is
-# server-side data that cannot be spoofed by the customer.
-#
-# Fields requested:
-#   lines.id              — The cart line's unique GID (used to target the discount)
-#   lines.cost.totalAmount — The real Shopify price for this line (quantity × unit price)
-#   lines.attribute        — We read the "_Bundle" line item property specifically
-
 query Input {
   cart {
     lines {
       id
+      quantity
       cost {
         totalAmount {
           amount
           currencyCode
+        }
+      }
+      merchandise {
+        ... on ProductVariant {
+          id
         }
       }
       attribute(key: "_Bundle") {

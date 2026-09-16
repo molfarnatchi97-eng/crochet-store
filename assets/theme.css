@@ -474,6 +474,12 @@ img {
   stroke-dashoffset: 0;
 }
 
+.pattern-card.selected .card-select-status {
+  background: var(--primary-accent);
+  color: white;
+  border-color: var(--primary-accent);
+}
+
 .card-info {
   display: flex;
   flex-direction: column;
