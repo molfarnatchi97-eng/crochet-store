@@ -1,56 +1,130 @@
 {% comment %}
   Standard styled footer.
-  Connects to Shopify Navigation menus with clean fallbacks.
+  Connects to Shopify Navigation menus with clean dynamic loops and customizer block support.
 {% endcomment %}
 
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
-      <!-- Logo / Info Column -->
-      <div class="footer-col" style="max-width: 320px;">
-        <span class="logo-text" style="font-size: 1.4rem;">
-          <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
-          {{ shop.name | default: "MindFlow" }}
-        </span>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">
-          Premium digital productivity guides and growth planners designed for peak performance, mental clarity, and daily habit mastery.
-        </p>
-      </div>
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'link_list' %}
+              <div class="footer-col" {{ block.shopify_attributes }}>
+                {% if block.settings.heading != blank %}
+                  <div class="footer-col-title">{{ block.settings.heading }}</div>
+                {% endif %}
+                <ul class="footer-links">
+                  {%- assign footer_linklist = block.settings.menu -%}
+                  {%- if footer_linklist != blank and footer_linklist.links.size > 0 -%}
+                    {%- for link in footer_linklist.links -%}
+                      <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {%- endfor -%}
+                  {%- elsif linklists[footer_linklist].links.size > 0 -%}
+                    {%- for link in linklists[footer_linklist].links -%}
+                      <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {%- endfor -%}
+                  {%- endif -%}
+                </ul>
+              </div>
 
-      <!-- Links Column -->
-      <div class="footer-col">
-        <div class="footer-col-title">Shop Guides</div>
-        <ul class="footer-links">
-          {%- assign footer_menu = linklists[section.settings.footer_menu] | default: linklists['footer'] -%}
-          {%- if footer_menu != blank and footer_menu.links.size > 0 -%}
-            {%- for link in footer_menu.links -%}
-              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-            {%- endfor -%}
-          {%- else -%}
-            <li><a href="/collections/all-products">All Products</a></li>
-            <li><a href="/pages/build-a-bundle">Build-a-Bundle</a></li>
-          {%- endif -%}
-        </ul>
-      </div>
+            {% when 'text' %}
+              <div class="footer-col" style="max-width: 340px;" {{ block.shopify_attributes }}>
+                {% if block.settings.heading != blank %}
+                  <div class="footer-col-title">{{ block.settings.heading }}</div>
+                {% endif %}
+                {% if block.settings.subtext != blank %}
+                  <div style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-top: 8px;">
+                    {{ block.settings.subtext }}
+                  </div>
+                {% endif %}
+              </div>
 
-      <!-- Support Column -->
-      <div class="footer-col">
-        <div class="footer-col-title">Customer Service</div>
-        <ul class="footer-links">
-          {%- assign support_menu = linklists[section.settings.support_menu] | default: linklists['customer-service'] -%}
-          {%- if support_menu != blank and support_menu.links.size > 0 -%}
-            {%- for link in support_menu.links -%}
-              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-            {%- endfor -%}
-          {%- else -%}
-            <li><a href="/pages/contact">Contact Support</a></li>
-            <li><a href="/policies/terms-of-service">Terms of Service</a></li>
-            <li><a href="/policies/privacy-policy">Privacy Policy</a></li>
-          {%- endif -%}
-        </ul>
-      </div>
+            {% when 'brand_info' %}
+              <div class="footer-col" style="max-width: 320px;" {{ block.shopify_attributes }}>
+                <span class="logo-text" style="font-size: 1.4rem;">
+                  <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                  {{ block.settings.title | default: shop.name }}
+                </span>
+                {% if block.settings.description != blank %}
+                  <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">
+                    {{ block.settings.description }}
+                  </p>
+                {% endif %}
+              </div>
+          {% endcase %}
+        {% endfor %}
+      {% else %}
+        <!-- Default Fallback Columns when no blocks are explicitly added -->
+        <!-- Logo / Info Column -->
+        <div class="footer-col" style="max-width: 320px;">
+          <span class="logo-text" style="font-size: 1.4rem;">
+            <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            {{ shop.name | default: "MindFlow" }}
+          </span>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">
+            Premium digital productivity guides and growth planners designed for peak performance, mental clarity, and daily habit mastery.
+          </p>
+        </div>
+
+        <!-- Links Column -->
+        <div class="footer-col">
+          <div class="footer-col-title">{{ section.settings.footer_menu_title | default: "Shop Guides" }}</div>
+          <ul class="footer-links">
+            {%- assign footer_menu = section.settings.footer_menu -%}
+            {%- if footer_menu != blank and footer_menu.links.size > 0 -%}
+              {%- for link in footer_menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- elsif linklists[footer_menu].links.size > 0 -%}
+              {%- for link in linklists[footer_menu].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- elsif linklists['footer'].links.size > 0 -%}
+              {%- for link in linklists['footer'].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- else -%}
+              <li><a href="/collections/all-products">All Products</a></li>
+              <li><a href="/pages/build-a-bundle">Build-a-Bundle</a></li>
+            {%- endif -%}
+          </ul>
+        </div>
+
+        <!-- Customer Service / Support Column -->
+        <div class="footer-col">
+          <div class="footer-col-title">{{ section.settings.support_menu_title | default: "Customer Service" }}</div>
+          <ul class="footer-links">
+            {%- assign support_menu = section.settings.support_menu -%}
+            {%- if support_menu != blank and support_menu.links.size > 0 -%}
+              {%- for link in support_menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- elsif linklists[support_menu].links.size > 0 -%}
+              {%- for link in linklists[support_menu].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- elsif linklists['customer-service'].links.size > 0 -%}
+              {%- for link in linklists['customer-service'].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- elsif linklists['footer'].links.size > 0 -%}
+              {%- for link in linklists['footer'].links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            {%- else -%}
+              <li><a href="/search">Search</a></li>
+              <li><a href="/pages/contact">Contact Support</a></li>
+              <li><a href="/policies/terms-of-service">Terms of Service</a></li>
+              <li><a href="/policies/privacy-policy">Privacy Policy</a></li>
+            {%- endif -%}
+          </ul>
+        </div>
+      {% endif %}
     </div>
 
     <!-- Bottom Copyright / Socials -->
@@ -59,7 +133,6 @@
         &copy; {{ 'now' | date: '%Y' }} {{ shop.name | default: "MindFlow" }}. All digital guides and planners are for personal use.
       </div>
       <div class="payment-badges" style="display: flex; gap: 8px; opacity: 0.65;">
-        <!-- Simple text-based trust badges -->
         <span style="font-size: 0.75rem; border: 1px solid var(--text-muted); padding: 2px 6px; border-radius: 4px;">Shopify Secure</span>
         <span style="font-size: 0.75rem; border: 1px solid var(--text-muted); padding: 2px 6px; border-radius: 4px;">PayPal</span>
         <span style="font-size: 0.75rem; border: 1px solid var(--text-muted); padding: 2px 6px; border-radius: 4px;">Stripe</span>
@@ -73,16 +146,106 @@
   "name": "Footer",
   "settings": [
     {
+      "type": "text",
+      "id": "footer_menu_title",
+      "label": "Shop Menu Heading",
+      "default": "Shop Guides"
+    },
+    {
       "type": "link_list",
       "id": "footer_menu",
       "label": "Shop Menu",
       "default": "footer"
     },
     {
+      "type": "text",
+      "id": "support_menu_title",
+      "label": "Customer Service Heading",
+      "default": "Customer Service"
+    },
+    {
       "type": "link_list",
       "id": "support_menu",
       "label": "Customer Service Menu"
     }
-  ]
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Menu / Navigation",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Customer Service"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer",
+          "info": "Displays navigation links from the selected Shopify menu."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "About Our Guides"
+        },
+        {
+          "type": "textarea",
+          "id": "subtext",
+          "label": "Text",
+          "default": "Premium digital productivity guides and growth planners designed for peak performance and daily habit mastery."
+        }
+      ]
+    },
+    {
+      "type": "brand_info",
+      "name": "Brand Info / Logo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Store Name",
+          "default": "MindFlow"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Premium digital productivity guides and growth planners designed for peak performance, mental clarity, and daily habit mastery."
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "brand_info"
+      },
+      {
+        "type": "link_list",
+        "settings": {
+          "heading": "Shop Guides",
+          "menu": "footer"
+        }
+      },
+      {
+        "type": "link_list",
+        "settings": {
+          "heading": "Customer Service",
+          "menu": "footer"
+        }
+      }
+    ]
+  }
 }
 {% endschema %}
